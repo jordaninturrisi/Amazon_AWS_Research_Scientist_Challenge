@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-def plot1(kmeans, counts, counts_norm, dict, labels):
+# Plot cluster data relating to normalised view counts
+def plot_cluster1(kmeans, counts, counts_norm, dict, labels):
 
     # Plot the results
     plt.figure(figsize=(16,4))
@@ -34,8 +34,8 @@ def plot1(kmeans, counts, counts_norm, dict, labels):
 
     return
 
-
-def plot2(kmeans, counts, counts_norm, dict, labels):
+# Plot cluster data relating to absolute view counts
+def plot_cluster2(kmeans, counts, counts_norm, dict, labels):
 
     # Plot the results
     plt.figure(figsize=(16,4))
@@ -66,14 +66,13 @@ def plot2(kmeans, counts, counts_norm, dict, labels):
 
     return
 
-
-
-
+# Get unique values and counts from video features
 def get_counts(video_features, idx):
     unique, counts = np.unique(video_features[idx], return_counts=True)
     unique = np.concatenate((np.expand_dims(unique, axis=1), np.expand_dims(counts, axis=1)), axis=1)
     return unique
 
+# Deal with data which doesn't have elements for all features
 def expand_data(feat, feat_all):
     new_feat = []
     new_feat = feat_all
@@ -85,8 +84,8 @@ def expand_data(feat, feat_all):
 
     return new_feat
 
+# Count & Normalise data
 def count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx):
-
     feat_all = get_counts(video_features, all_idx)
     feat_all_norm = feat_all[:,1] / len(all_idx)
 
@@ -107,6 +106,7 @@ def count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
     return feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels
 
+# Plot video length
 def plot_video_length(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
     series1 = video_features[hot_idx]
@@ -148,7 +148,7 @@ def plot_video_length(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
     return
 
-
+# Plot video language
 def plot_video_language(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
     feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels = count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx)
@@ -172,6 +172,7 @@ def plot_video_language(video_features, hot_idx, popular_idx, else_idx, all_idx)
 
     return
 
+# Plot video upload date
 def plot_video_date(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
     feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels = count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx)
@@ -196,6 +197,7 @@ def plot_video_date(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
     return
 
+# Plot video quality
 def plot_video_quality(video_features, hot_idx, popular_idx, else_idx, all_idx):
     feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels = count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx)
 
