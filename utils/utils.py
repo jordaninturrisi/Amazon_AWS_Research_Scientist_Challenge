@@ -68,95 +68,138 @@ def plot2(kmeans, counts, counts_norm, dict, labels):
     return
 
 
-def plot_video_language(video_features, hot_idx):
-    languages, language_counts = np.unique(video_features['video_language'][hot_idx], return_counts=True)
-    languages = np.concatenate((np.expand_dims(languages, axis=1), np.expand_dims(language_counts, axis=1)), axis=1)
 
-    print('%d languages:' % languages.shape[0])
-    print([lang for lang in zip(languages[:,0], languages[:,1])])
 
-    # Plot
+def get_counts(video_features, idx):
+    unique, counts = np.unique(video_features[idx], return_counts=True)
+    unique = np.concatenate((np.expand_dims(unique, axis=1), np.expand_dims(counts, axis=1)), axis=1)
+    return unique
+
+def expand_data(feat, feat_all):
+    new_feat = []
+    new_feat = feat_all
+    new_feat[:,1] = 0
+
+    for i in range(len(feat)):
+        ind = np.where(feat_all[:,0] == str(feat[i,0]))[0][0]
+        new_feat[ind,1] = feat[i,1]
+
+    return new_feat
+
+def count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx):
+
+    feat_all = get_counts(video_features, all_idx)
+    feat_all_norm = feat_all[:,1] / len(all_idx)
+
+    feat_hot = get_counts(video_features, hot_idx)
+    feat_hot = expand_data(feat_hot, feat_all)
+    feat_hot_norm = (feat_hot[:,1] + 1e-5 )/ len(hot_idx)
+
+    feat_pop = get_counts(video_features, popular_idx)
+    feat_pop = expand_data(feat_pop, feat_all)
+    feat_pop_norm = feat_pop[:,1] / len(popular_idx)
+
+    feat_else = get_counts(video_features, else_idx)
+    feat_else = expand_data(feat_else, feat_all)
+    feat_else_norm = feat_else[:,1] / len(else_idx)
+
+    num_feat = feat_all.shape[0]
+    labels = [str(feat) for _, feat in enumerate(feat_all[:,0])]
+
+    return feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels
+
+def plot_video_length(video_features, hot_idx, popular_idx, else_idx, all_idx):
+
+    series1 = video_features[hot_idx]
+    series2 = video_features[popular_idx]
+    series3 = video_features[else_idx]
+    series4 = video_features[all_idx]
+    series = [series1, series2, series3, series4]
+    labels = ['hot', 'pop', 'else', 'all']
+    colors = ['red', 'blue', 'green', 'black']
+
     plt.figure(figsize=(16,6))
-    plt.subplot(1,2,1)
-    plt.bar(range(languages.shape[0]), languages[:,1], tick_label=[str(lang) for lang in zip(languages[:,0])])
-    plt.title('Video Languages', fontsize=18)
-    plt.xlabel('Countries', fontsize=14)
-    plt.ylabel('Occurrences (#)', fontsize=14)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    plt.title('Video Length', fontsize=20)
+    plt.xlabel('Length', fontsize=16)
+    plt.ylabel('Occurrences (%)', fontsize=16)
 
-    languages_norm = languages
-    languages_norm[:,1] = languages[:,1] / len(hot_idx)
+    plt.hist(series, bins=5, histtype='bar', align='mid', rwidth=0.75, density=True, color=colors, label=labels)
 
-    plt.subplot(1,2,2)
-    plt.bar(range(languages.shape[0]), languages_norm[:,1], tick_label=[str(lang) for lang in zip(languages_norm[:,0])])
-    plt.title('Video Languages', fontsize=18)
-    plt.xlabel('Countries', fontsize=14)
-    plt.ylabel('Occurrences (%)', fontsize=14)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+
+    plt.legend(fontsize=14)
     plt.show()
 
     return
 
-def plot_video_date(video_features, hot_idx):
-    date, date_counts = np.unique(video_features['video_upload_date'][hot_idx], return_counts=True)
-    date = np.concatenate((np.expand_dims(date, axis=1), np.expand_dims(date_counts, axis=1)), axis=1)
 
-    print('%d dates:' % date.shape[0])
-    print([day for day in zip(date[:,0], date[:,1])])
+def plot_video_language(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
-    # Plot
+    feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels = count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx)
+    width=0.2
+
     plt.figure(figsize=(16,6))
-    plt.subplot(1,2,1)
-    plt.bar(range(date.shape[0]), date[:,1], tick_label=[str(day) for day in zip(date[:,0])])
-    plt.title('Video Upload Date', fontsize=18)
-    plt.xlabel('Date', fontsize=14)
-    plt.ylabel('Occurrences (#)', fontsize=14)
-    plt.xticks(fontsize=12, rotation=45)
-    plt.yticks(fontsize=12)
+    plt.title('Video Languages', fontsize=20)
+    plt.xlabel('Language', fontsize=16)
+    plt.ylabel('Occurrences (%)', fontsize=16)
 
-    date_norm = date
-    date_norm[:,1] = date[:,1] / len(hot_idx)
+    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='r', tick_label=labels, label='Hot')
+    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='b', tick_label=labels, label='Popular')
+    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='g', tick_label=labels, label='Everything Else')
+    plt.bar(np.arange(num_feat)+1.5*width, feat_all_norm, width, color='black', tick_label=labels, label='All')
 
-    plt.subplot(1,2,2)
-    plt.bar(range(date.shape[0]), date_norm[:,1], tick_label=[str(day) for day in zip(date_norm[:,0])])
-    plt.title('Video Upload Date', fontsize=18)
-    plt.xlabel('Date', fontsize=14)
-    plt.ylabel('Occurrences (%)', fontsize=14)
-    plt.xticks(fontsize=12, rotation=45)
-    plt.yticks(fontsize=12)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+
+    plt.legend(fontsize=14)
     plt.show()
 
     return
 
-def plot_video_quality(video_features, hot_idx):
-    quality, quality_counts = np.unique(video_features['video_quality'][hot_idx], return_counts=True)
-    quality = np.concatenate((np.expand_dims(quality, axis=1), np.expand_dims(quality_counts, axis=1)), axis=1)
+def plot_video_date(video_features, hot_idx, popular_idx, else_idx, all_idx):
 
-    print('%d different qualities:' % quality.shape[0])
-    print([qual for qual in zip(quality[:,0], quality[:,1])])
+    feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels = count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx)
 
-    # Plot
+    width=0.2
+
     plt.figure(figsize=(16,6))
-    plt.subplot(1,2,1)
-    plt.bar(range(quality.shape[0]), quality[:,1], tick_label=[str(qual) for qual in zip(quality[:,0])])
-    plt.title('Video Quality', fontsize=18)
-    plt.xlabel('Date', fontsize=14)
-    plt.ylabel('Occurrences (#)', fontsize=14)
-    plt.xticks(fontsize=12, rotation=45)
-    plt.yticks(fontsize=12)
+    plt.title('Video Upload Date', fontsize=20)
+    plt.xlabel('Date', fontsize=16)
+    plt.ylabel('Occurrences (%)', fontsize=16)
 
-    quality_norm = quality
-    quality_norm[:,1] = quality[:,1] / len(hot_idx)
+    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='r', tick_label=labels, label='Hot')
+    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='b', tick_label=labels, label='Popular')
+    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='g', tick_label=labels, label='Everything Else')
+    plt.bar(np.arange(num_feat)+1.5*width, feat_all_norm, width, color='black', tick_label=labels, label='All')
 
-    plt.subplot(1,2,2)
-    plt.bar(range(quality.shape[0]), quality_norm[:,1], tick_label=[str(qual) for qual in zip(quality_norm[:,0])])
-    plt.title('Video Quality', fontsize=18)
-    plt.xlabel('Date', fontsize=14)
-    plt.ylabel('Occurrences (%)', fontsize=14)
-    plt.xticks(fontsize=12, rotation=45)
-    plt.yticks(fontsize=12)
+    plt.xticks(fontsize=14, rotation=90)
+    plt.yticks(fontsize=14)
+
+    plt.legend(fontsize=14)
+    plt.show()
+
+    return
+
+def plot_video_quality(video_features, hot_idx, popular_idx, else_idx, all_idx):
+    feat_hot_norm, feat_pop_norm, feat_else_norm, feat_all_norm, num_feat, labels = count_normalise(video_features, hot_idx, popular_idx, else_idx, all_idx)
+
+    width=0.2
+
+    plt.figure(figsize=(16,6))
+    plt.title('Video Quality', fontsize=20)
+    plt.xlabel('Quality', fontsize=16)
+    plt.ylabel('Occurrences (%)', fontsize=16)
+
+    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='r', tick_label=labels, label='Hot')
+    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='b', tick_label=labels, label='Popular')
+    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='g', tick_label=labels, label='Everything Else')
+    plt.bar(np.arange(num_feat)+1.5*width, feat_all_norm, width, color='black', tick_label=labels, label='All')
+
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+
+    plt.legend(fontsize=14)
     plt.show()
 
     return
