@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 
 def plot1(kmeans, counts, counts_norm, dict, labels):
-    # label = [num for num in range(kmeans.n_clusters)]
 
     # Plot the results
     plt.figure(figsize=(16,4))
@@ -114,16 +113,32 @@ def plot_video_length(video_features, hot_idx, popular_idx, else_idx, all_idx):
     series2 = video_features[popular_idx]
     series3 = video_features[else_idx]
     series4 = video_features[all_idx]
-    series = [series1, series2, series3, series4]
-    labels = ['hot', 'pop', 'else', 'all']
-    colors = ['red', 'blue', 'green', 'black']
+
+    bins=np.array([0,250,500,750,1000,1250,1500,1750,2000])
+
+    hot_heights, hot_bins = np.asarray(np.histogram(series1, bins=bins))
+    pop_heights, pop_bins = np.asarray(np.histogram(series2, bins=bins))
+    else_heights, else_bins = np.asarray(np.histogram(series3, bins=bins))
+    all_heights, all_bins = np.asarray(np.histogram(series4, bins=bins))
+
+    bin_centers = 0.5 * (bins[1:] + bins[:-1])
+
+    hot_heights_norm = hot_heights / len(hot_idx)
+    pop_heights_norm = pop_heights / len(popular_idx)
+    else_heights_norm = else_heights / len(else_idx)
+    all_heights_norm = all_heights / len(all_idx)
+
+    width = 50
 
     plt.figure(figsize=(16,6))
     plt.title('Video Length', fontsize=20)
     plt.xlabel('Length', fontsize=16)
     plt.ylabel('Occurrences (%)', fontsize=16)
 
-    plt.hist(series, bins=5, histtype='bar', align='mid', rwidth=0.75, density=True, color=colors, label=labels)
+    plt.bar(bin_centers, hot_heights_norm, width=width, color='red', label='Hot');
+    plt.bar(bin_centers + width, pop_heights_norm, width=width, color='blue', label='Popular');
+    plt.bar(bin_centers + 2*width, else_heights_norm, width=width, color='green', label='Everything Else');
+    plt.bar(bin_centers + 3*width, all_heights_norm, width=width, color='black', label='All');
 
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
@@ -144,9 +159,9 @@ def plot_video_language(video_features, hot_idx, popular_idx, else_idx, all_idx)
     plt.xlabel('Language', fontsize=16)
     plt.ylabel('Occurrences (%)', fontsize=16)
 
-    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='r', tick_label=labels, label='Hot')
-    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='b', tick_label=labels, label='Popular')
-    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='g', tick_label=labels, label='Everything Else')
+    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='red', tick_label=labels, label='Hot')
+    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='blue', tick_label=labels, label='Popular')
+    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='green', tick_label=labels, label='Everything Else')
     plt.bar(np.arange(num_feat)+1.5*width, feat_all_norm, width, color='black', tick_label=labels, label='All')
 
     plt.xticks(fontsize=14)
@@ -168,9 +183,9 @@ def plot_video_date(video_features, hot_idx, popular_idx, else_idx, all_idx):
     plt.xlabel('Date', fontsize=16)
     plt.ylabel('Occurrences (%)', fontsize=16)
 
-    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='r', tick_label=labels, label='Hot')
-    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='b', tick_label=labels, label='Popular')
-    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='g', tick_label=labels, label='Everything Else')
+    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='red', tick_label=labels, label='Hot')
+    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='blue', tick_label=labels, label='Popular')
+    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='green', tick_label=labels, label='Everything Else')
     plt.bar(np.arange(num_feat)+1.5*width, feat_all_norm, width, color='black', tick_label=labels, label='All')
 
     plt.xticks(fontsize=14, rotation=90)
@@ -191,9 +206,9 @@ def plot_video_quality(video_features, hot_idx, popular_idx, else_idx, all_idx):
     plt.xlabel('Quality', fontsize=16)
     plt.ylabel('Occurrences (%)', fontsize=16)
 
-    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='r', tick_label=labels, label='Hot')
-    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='b', tick_label=labels, label='Popular')
-    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='g', tick_label=labels, label='Everything Else')
+    plt.bar(np.arange(num_feat)-1.5*width, feat_hot_norm, width, color='red', tick_label=labels, label='Hot')
+    plt.bar(np.arange(num_feat)-0.5*width, feat_pop_norm, width, color='blue', tick_label=labels, label='Popular')
+    plt.bar(np.arange(num_feat)+0.5*width, feat_else_norm, width, color='green', tick_label=labels, label='Everything Else')
     plt.bar(np.arange(num_feat)+1.5*width, feat_all_norm, width, color='black', tick_label=labels, label='All')
 
     plt.xticks(fontsize=14)
