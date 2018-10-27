@@ -1,5 +1,8 @@
 # Amazon Research Scientist Challenge
 
+- [ ] Challenge 1: [Price Optimization](https://github.com/jordaninturrisi/Stanford_CS231n_2017/blob/master/assignment1/knn.ipynb)
+- [x] Challenge 2: [Recommendation Engine for Prime Video](https://github.com/jordaninturrisi/Amazon_AWS_Research_Scientist_Challenge/blob/master/Question2.ipynb)
+- [ ] Challenge 3: [Understanding user and product interaction](https://github.com/jordaninturrisi/Amazon_AWS_Research_Scientist_Challenge/blob/master/Question3.ipynb)
 
 ## General Overview
 
