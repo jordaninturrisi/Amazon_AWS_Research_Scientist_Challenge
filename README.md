@@ -15,8 +15,8 @@ Return the results to us in the next three days.
 - Use any format you like including PowerPoint, Word doc, excel files, Jupyter notebooks etc.
 - All data and included scenarios are fictitious
 
-## Challenge 1: Price Optimization
 
+## Challenge 1: Price Optimization
 A pricing experiment was conducted by Amazon.com.au with the main aim of increasing revenue. In the experiment, users were grouped into two groups: A (66% of the user base) and B (33% of user base). Group A users were offered a cheaper price while group B users received a higher price.
 
 ### Business Questions
@@ -29,7 +29,7 @@ Table 1: test_results
 - **user_id**: the Id of the user. Can be joined to user_id in user_table 
 - **timestamp**: the date and time when the user first hit the webpage. It is in user local time 
 - **source**: marketing channel that led to the user coming to the site. It can be:
-  - ads-["google", "facebook", "bing", "yahoo", "other"]. That is, user coming from google ads, yahoo ads, etc. 
+  - ads - ["google", "facebook", "bing", "yahoo", "other"]. That is, user coming from google ads, yahoo ads, etc. 
   - seo - ["google", "facebook", "bing", "yahoo", "other"]. That is, user coming from google search, yahoo,  facebook, etc.
   - friend_referral : user coming from a referral link of another user
   - direct_traffic: user coming by directly typing the address of the site on the browser
@@ -46,8 +46,8 @@ Table 2: user_table
 - **lat**: city latitude - should match user city
 - **long**: city longitude - should match user city
 
-## Challenge 2: Recommendation Engine for Prime Video
 
+## Challenge 2: Recommendation Engine for Prime Video
 Today, videos shown to new users on Prime Video’s home page are manually chosen. You need to implement a recommendation engine to increase the conversation rate.
 
 ### Business Questions
@@ -71,3 +71,23 @@ Table 2: video_features
 - **video_language**: language of the video, as selected by the user when they uploaded the video
 - **video_upload_date**: when the video was uploaded 
 - **video_quality**: quality of the video. It can be [ 240p, 360p, 480p, 720p, 1080p]
+
+
+## Challenge 3: Understanding user and product interaction
+Amazon’s employee travel provider has asked you to review how users interact with their online travel website.
+They store their data in JSON files. Each row in these files lists all the different cities that have been searched for by a user within the same session (as well as some other info about the user).
+
+### Business Questions
+- There was a bug in the code and one country didn't get logged. Can you guess which country? How?
+- For each city, find the most likely city to be also searched for within the same session.
+- Travel sites are browsed by two kinds of users. Users who are actually planning a trip and users who just dream about a vacation. The first group obviously has a much higher purchasing intent. Users planning a trip often search for cities close to each other, while users who search for cities far away from each other are often just dreaming about a vacation (or a great work trip!). Based on this idea, come up with an algorithm that clusters sessions into two groups: high intent and low intent.
+
+### Data Details
+Table 1: city_search
+- **session_id**: session id.
+- **unix_timestamp**: unix timestamp of session start time
+- **cities**: the unique cities which were searched within the same session
+- **user**:
+  - user_id: the id of the user
+  - joining_date: when the user created the account
+  - country: where the user is based
