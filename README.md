@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Amazon Research Scientist Challenge
 
 
@@ -14,3 +15,7 @@ Return the results to us in the next three days.
 - Bonus points for well communicated and presented results
 - Use any format you like including PowerPoint, Word doc, excel files, Jupyter notebooks etc.
 - All data and included scenarios are fictitious
+=======
+# Amazon_AWS_Challenge
+Amazon AWS Research Scientist Coding Challenge
+>>>>>>> 3e07916c03d5c5b10d8c9caa493638bf1490945d
